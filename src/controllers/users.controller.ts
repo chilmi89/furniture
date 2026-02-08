@@ -1,62 +1,69 @@
 import { Request, Response } from "express";
 import prisma from "../conectionsPrisma/prisma";
+import { ApiResponse } from "../utils/apiResponse";
+import { createUserSchema, updateUserSchema, userIdSchema } from "../validations/user.validation";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.users.findMany();
-    res.json(users);
+    return ApiResponse.success(res, users, "Users fetched successfully");
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch users", details: error instanceof Error ? error.message : "Unknown error" });
+    return ApiResponse.error(res, "Failed to fetch users", 500, error instanceof Error ? error.message : "Unknown error");
   }
 };
 
 export const getUserById = async (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
+    const validated = userIdSchema.parse({ params: req.params });
     const user = await prisma.users.findUnique({
-      where: { id: Number(id) },
+      where: { id: validated.params.id },
     });
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+
+    if (!user) return ApiResponse.error(res, "User not found", 404);
+    return ApiResponse.success(res, user, "User fetched successfully");
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user", details: error instanceof Error ? error.message : "Unknown error" });
+    return ApiResponse.error(res, "Invalid ID or user not found", 400, error);
   }
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
   try {
+    const validated = createUserSchema.parse({ body: req.body });
     const newUser = await prisma.users.create({
-      data: { name, email, password },
+      data: validated.body,
     });
-    res.status(201).json(newUser);
+    return ApiResponse.success(res, newUser, "User created successfully", 201);
   } catch (error) {
-    res.status(500).json({ error: "Failed to create user", details: error instanceof Error ? error.message : "Unknown error" });
+    return ApiResponse.error(res, "Failed to create user", 400, error);
   }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { name, email, password, is_active } = req.body;
   try {
+    const validated = updateUserSchema.parse({ params: req.params, body: req.body });
     const updatedUser = await prisma.users.update({
-      where: { id: Number(id) },
-      data: { name, email, password, is_active },
+      where: { id: validated.params.id },
+      body: {
+        name: validated.body.name,
+        email: validated.body.email,
+        password: validated.body.password,
+        is_active: validated.body.is_active,
+      },
     });
-    res.json(updatedUser);
+    return ApiResponse.success(res, updatedUser, "User updated successfully");
   } catch (error) {
-    res.status(500).json({ error: "Failed to update user", details: error instanceof Error ? error.message : "Unknown error" });
+    return ApiResponse.error(res, "Failed to update user", 400, error);
   }
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
+    const validated = userIdSchema.parse({ params: req.params });
     await prisma.users.delete({
-      where: { id: Number(id) },
+      where: { id: validated.params.id },
     });
-    res.json({ message: "User deleted successfully" });
+    return ApiResponse.success(res, null, "User deleted successfully");
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete user", details: error instanceof Error ? error.message : "Unknown error" });
+    return ApiResponse.error(res, "Failed to delete user", 400, error);
   }
 };

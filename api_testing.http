@@ -1,0 +1,46 @@
+### FurniBackend API Testing
+@baseUrl = http://localhost:3001/api
+
+# @name healthCheck
+GET {{baseUrl}}
+
+###
+
+# @name getAllUsers
+GET {{baseUrl}}/users
+
+###
+
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "password": "securepassword123"
+}
+
+###
+
+# @name getUserById
+# Replace 1 with an actual ID from getAllUsers
+GET {{baseUrl}}/users/1
+
+###
+
+# @name updateUser
+# Replace 1 with an actual ID
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+    "name": "Jane Smith",
+    "is_active": 0
+}
+
+###
+
+# @name deleteUser
+# Replace 1 with an actual ID
+DELETE {{baseUrl}}/users/1
