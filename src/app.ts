@@ -9,8 +9,13 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/users", async (req, res) => {
-  const users = await prisma.users.findMany();
-  res.json(users);
+  try {
+    const users = await prisma.users.findMany();
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" });
+  }
 });
 
 export default app;
