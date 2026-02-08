@@ -4,21 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const prisma_1 = __importDefault(require("./conectionsPrisma/prisma"));
+const users_routes_1 = __importDefault(require("./routes/users.routes"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+// Health check
 app.get("/api", (req, res) => {
-    res.json({ status: "ok" });
+    res.json({ status: "ok", message: "FurniBackend API is running" });
 });
-app.get("/api/users", async (req, res) => {
-    try {
-        const users = await prisma_1.default.users.findMany();
-        res.json(users);
-    }
-    catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" });
-    }
-});
+// Routes
+app.use("/api/users", users_routes_1.default);
 exports.default = app;
 //# sourceMappingURL=app.js.map

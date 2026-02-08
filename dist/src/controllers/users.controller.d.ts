@@ -1,10 +1,7 @@
-export declare function getAllUsers(): Promise<{
-    name: string;
-    id: number;
-    email: string;
-    password: string;
-    is_active: number | null;
-    created_at: Date | null;
-    updated_at: Date | null;
-}[]>;
+import { Request, Response } from "express";
+export declare const getAllUsers: (req: Request, res: Response) => Promise<void>;
+export declare const getUserById: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const createUser: (req: Request, res: Response) => Promise<void>;
+export declare const updateUser: (req: Request, res: Response) => Promise<void>;
+export declare const deleteUser: (req: Request, res: Response) => Promise<void>;
 //# sourceMappingURL=users.controller.d.ts.map

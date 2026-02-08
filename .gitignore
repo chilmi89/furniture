@@ -2,7 +2,7 @@ node_modules
 # Keep environment variables out of version control
 .env
 supabase_init.sql
-prisma/
+
 
 /src/generated/prisma
 

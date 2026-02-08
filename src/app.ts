@@ -1,21 +1,16 @@
 import express from "express";
-import prisma from "./conectionsPrisma/prisma";
+import usersRoutes from "./routes/users.routes";
 
 const app = express();
+
 app.use(express.json());
 
+// Health check
 app.get("/api", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", message: "FurniBackend API is running" });
 });
 
-app.get("/api/users", async (req, res) => {
-  try {
-    const users = await prisma.users.findMany();
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" });
-  }
-});
+// Routes
+app.use("/api/users", usersRoutes);
 
 export default app;
