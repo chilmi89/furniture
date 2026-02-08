@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
 const client_1 = require("@prisma/client");
 const globalForPrisma = global;
 const prisma = globalForPrisma.prisma ??

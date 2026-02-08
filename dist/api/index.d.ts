@@ -1,4 +1,3 @@
-import serverless from "serverless-http";
-declare const _default: serverless.Handler;
-export default _default;
+import app from "../src/app";
+export default app;
 //# sourceMappingURL=index.d.ts.map
